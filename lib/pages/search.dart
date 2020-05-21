@@ -126,7 +126,7 @@ class UserResult extends StatelessWidget {
             child: ListTile(
               leading: CircleAvatar(
                 backgroundColor: Colors.grey,
-                backgroundImage: user.photoUrl != null ? CachedNetworkImageProvider(user.photoUrl): new AssetImage('assets/images/default.jpg'),
+                backgroundImage: user.photoUrl != null ? CachedNetworkImageProvider(user.photoUrl) : AssetImage('assets/images/user.png'),
               ),
               title: Text(
                 user.displayName,

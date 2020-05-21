@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttershare/models/user.dart';
@@ -12,7 +13,9 @@ import 'package:google_sign_in/google_sign_in.dart';
 
 
 final GoogleSignIn googleSignIn = GoogleSignIn();
+final StorageReference storageRef = FirebaseStorage.instance.ref();
 final usersRef = Firestore.instance.collection('users');
+final postRef = Firestore.instance.collection('posts');
 final DateTime timestamp = DateTime.now();
 User currentUser;
 
