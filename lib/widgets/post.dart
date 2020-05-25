@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttershare/models/user.dart';
 import 'package:fluttershare/pages/home.dart';
+import 'package:fluttershare/widgets/custom_image.dart';
 import 'package:fluttershare/widgets/progress.dart';
 
 class Post extends StatefulWidget {
@@ -107,7 +108,7 @@ class _PostState extends State<Post> {
      child: Stack(
        alignment: Alignment.center,
        children: [
-         Image.network(mediaUrl),
+         cachedNetworkImage(mediaUrl),
        ],
      ),
    ) ;
@@ -126,7 +127,7 @@ class _PostState extends State<Post> {
               onTap: ()=> print('liking post'),
               child: Icon(
                 Icons.favorite_border,
-                size: 20.0,
+                size: 28.0,
                 color: Colors.pink,
               ),
             ),
@@ -163,13 +164,14 @@ class _PostState extends State<Post> {
             Container(
               margin: EdgeInsets.only(left: 20.0),
               child: Text(
-                '$username',
+                '$username:',
                 style: TextStyle(
                   color: Colors.black,
                   fontWeight: FontWeight.bold,
                 ),
               ),
             ),
+            SizedBox(width: 10.0,),
             Expanded(
               child: Text(
                 description,
