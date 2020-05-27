@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:animator/animator.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -158,6 +157,9 @@ class _PostState extends State<Post> {
           .collection('userPosts')
           .document(postId)
           .updateData({'likes.$currentUserId': false});
+
+      removeLikeFromActivityFeed();
+
       setState(() {
         likeCount -= 1;
         isLiked = false;
@@ -169,6 +171,9 @@ class _PostState extends State<Post> {
           .collection('userPosts')
           .document(postId)
           .updateData({'likes.$currentUserId': true});
+
+      addLikeToActivityFeed();
+
       setState(() {
         likeCount += 1;
         isLiked = true;
@@ -181,6 +186,39 @@ class _PostState extends State<Post> {
         showHeart = false;
       });
     });
+  }
+
+  addLikeToActivityFeed() {
+    // add a notification to the postOwner;s activity feed only if comment made by other user
+    bool isNotPostOwner = currentUserId != ownerId;
+    if(isNotPostOwner){
+      activityFeedRef
+          .document(ownerId)
+          .collection('feedItems')
+          .document(postId)
+          .setData({
+        'type': 'like',
+        'username': currentUser.username,
+        'userId' : currentUser.id,
+        'userProfileImage': currentUser.photoUrl,
+        'mediaUrl': mediaUrl,
+        'timestamp': timestamp,
+      });
+    }
+  }
+
+  removeLikeFromActivityFeed(){
+    bool isNotPostOwner = currentUserId != ownerId;
+    if(isNotPostOwner){
+      activityFeedRef
+          .document(ownerId)
+          .collection('feedItems')
+          .document(postId)
+          .get().then((doc) {
+        if(doc.exists)
+          doc.reference.delete();
+      });
+    }
   }
 
   buildPostFooter() {
@@ -273,10 +311,14 @@ class _PostState extends State<Post> {
   }
 }
 
-showComments(BuildContext context, {String postId, String ownerId, String mediaUrl}){
-  Navigator.push(context, MaterialPageRoute(builder: (context)=> Comments(
-    postId : postId,
-    postOwnerId: ownerId,
-    postMediaUrl: mediaUrl,
-  )));
+showComments(BuildContext context,
+    {String postId, String ownerId, String mediaUrl}) {
+  Navigator.push(
+      context,
+      MaterialPageRoute(
+          builder: (context) => Comments(
+                postId: postId,
+                postOwnerId: ownerId,
+                postMediaUrl: mediaUrl,
+              )));
 }
