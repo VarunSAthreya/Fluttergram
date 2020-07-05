@@ -95,6 +95,9 @@ class _PostState extends State<Post> {
           return circularProgress();
         }
         User user = User.fromDocument(snapshot.data);
+
+        bool isPostOwner = currentUserId == ownerId;
+
         return ListTile(
           leading: CircleAvatar(
             backgroundImage: user.photoUrl != null
@@ -113,13 +116,90 @@ class _PostState extends State<Post> {
             ),
           ),
           subtitle: Text(location),
-          trailing: IconButton(
-            onPressed: () => print('deleting post'),
-            icon: Icon(Icons.more_vert),
-          ),
+          trailing: isPostOwner
+              ? IconButton(
+                  onPressed: () => handelDeletePost(context),
+                  icon: Icon(Icons.more_vert),
+                )
+              : Text(''),
         );
       },
     );
+  }
+
+  handelDeletePost(BuildContext parentContext) {
+    return showDialog(
+        context: parentContext,
+        builder: (context) {
+          return SimpleDialog(
+            title: Text("Remove This Post?"),
+            children: [
+              SimpleDialogOption(
+                onPressed: () => {
+                  Navigator.pop(context),
+                  deletePost(),
+                },
+                child: Text(
+                  'Delete',
+                  style: TextStyle(color: Colors.red),
+                ),
+              ),
+              SimpleDialogOption(
+                onPressed: () => Navigator.pop(context),
+                child: Text(
+                  'Caccel',
+                  style: TextStyle(color: Colors.grey),
+                ),
+              )
+            ],
+          );
+        });
+  }
+
+//  NOTE: TO DELETE A POST ownerId AND currentUserId MUST BE EQUAL, SO THEY CAN BE USED INTERCHANGEBLY.
+  deletePost() async {
+    // DELETE POST ITSELF
+
+    postRef
+        .document(ownerId)
+        .collection("userPosts")
+        .document(postId)
+        .get()
+        .then((doc) {
+      if (doc.exists) {
+        doc.reference.delete();
+      }
+    });
+    // DELETE UPLODED IMAGE FOR THE POST
+
+    storageRef.child("post_$postId.jpg").delete();
+
+    // DELETE ALL ACTIVITY FIELD NOTIFICATION
+
+    QuerySnapshot activityFeedSnapshot = await activityFeedRef
+        .document(ownerId)
+        .collection("feedItems")
+        .where('postId', isEqualTo: postId)
+        .getDocuments();
+
+    activityFeedSnapshot.documents.forEach((doc) {
+      if (doc.exists) {
+        doc.reference.delete();
+      }
+    });
+
+    // DELETE ALL COMMENTS
+
+    QuerySnapshot commentsSnapshot = await commentsRef
+        .document(postId)
+        .collection("comments")
+        .getDocuments();
+
+    commentsSnapshot.documents.forEach((doc) {
+      if (doc.exists) {
+        doc.reference.delete();
+      }
+    });
   }
 
   buildPostImage() {
