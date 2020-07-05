@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:fluttershare/pages/home.dart';
-import 'package:fluttershare/widgets/header.dart';
-import 'package:fluttershare/widgets/post.dart';
-import 'package:fluttershare/widgets/progress.dart';
+import '../pages/home.dart';
+import '../widgets/header.dart';
+import '../widgets/post.dart';
+import '../widgets/progress.dart';
 
 class PostScreen extends StatelessWidget {
-
   final String userId;
   final String postId;
 
@@ -14,10 +13,13 @@ class PostScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-      future: postRef.document(userId).collection('userPosts').document(postId).get(),
-      builder: (context, snapshot){
-        if(!snapshot.hasData)
-          return circularProgress();
+      future: postRef
+          .document(userId)
+          .collection('userPosts')
+          .document(postId)
+          .get(),
+      builder: (context, snapshot) {
+        if (!snapshot.hasData) return circularProgress();
         Post post = Post.fromDocument(snapshot.data);
         return Center(
           child: Scaffold(

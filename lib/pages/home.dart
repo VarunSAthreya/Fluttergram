@@ -2,15 +2,14 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:fluttershare/models/user.dart';
-import 'package:fluttershare/pages/activity_feed.dart';
-import 'package:fluttershare/pages/create_account.dart';
-import 'package:fluttershare/pages/profile.dart';
-import 'package:fluttershare/pages/search.dart';
-import 'package:fluttershare/pages/timeline.dart';
-import 'package:fluttershare/pages/upload.dart';
+import '../models/user.dart';
+import '../pages/activity_feed.dart';
+import '../pages/create_account.dart';
+import '../pages/profile.dart';
+import '../pages/search.dart';
+import '../pages/timeline.dart';
+import '../pages/upload.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-
 
 final GoogleSignIn googleSignIn = GoogleSignIn();
 final StorageReference storageRef = FirebaseStorage.instance.ref();
@@ -34,39 +33,36 @@ class _HomeState extends State<Home> {
   PageController pageController;
 
   @override
-  void initState(){
+  void initState() {
     super.initState();
     pageController = PageController();
     //detects when user signed in
-    googleSignIn.onCurrentUserChanged.listen((account){
+    googleSignIn.onCurrentUserChanged.listen((account) {
       handelSignIn(account);
-    }, onError: (err){
+    }, onError: (err) {
       print('Error signing in : $err');
-    }
-    );
+    });
     //Reauthenticate user when app is opened
-    googleSignIn.signInSilently(suppressErrors: false)
-        .then((account){
-          handelSignIn(account);
-    }).catchError((err){
+    googleSignIn.signInSilently(suppressErrors: false).then((account) {
+      handelSignIn(account);
+    }).catchError((err) {
       print('Error signing in : $err');
     });
   }
 
   @override
-  void dispose(){
+  void dispose() {
     pageController.dispose();
     super.dispose();
   }
 
-  handelSignIn(GoogleSignInAccount account){
-    if(account != null){
+  handelSignIn(GoogleSignInAccount account) {
+    if (account != null) {
       createUserInFirestore();
       setState(() {
         isAuth = true;
       });
-    }
-    else{
+    } else {
       setState(() {
         isAuth = false;
       });
@@ -76,16 +72,16 @@ class _HomeState extends State<Home> {
   createUserInFirestore() async {
     // 1) check if user exists in users collection in database(according to id)
     final GoogleSignInAccount user = googleSignIn.currentUser;
-    DocumentSnapshot doc =  await usersRef.document(user.id).get();
+    DocumentSnapshot doc = await usersRef.document(user.id).get();
 
     // 2) if the user dose'nt exist, then we want to take hem to the create account page
-    if(!doc.exists) {
+    if (!doc.exists) {
       final username = await Navigator.push(
           context, MaterialPageRoute(builder: (context) => CreateAccount()));
       // 3) get username from create account, use it to make new user document in users collection
       usersRef.document(user.id).setData({
-        'id' : user.id,
-        'username' : username,
+        'id': user.id,
+        'username': username,
         'photoUrl': user.photoUrl,
         'email': user.email,
         'displayName': user.displayName,
@@ -93,18 +89,18 @@ class _HomeState extends State<Home> {
         'timestamp': timestamp,
       });
 
-      doc =  await usersRef.document(user.id).get();
+      doc = await usersRef.document(user.id).get();
     }
-    currentUser =  User.fromDocument(doc);
+    currentUser = User.fromDocument(doc);
     print(currentUser);
     print(currentUser.username);
   }
 
-  login(){
+  login() {
     googleSignIn.signIn();
   }
 
-  logout(){
+  logout() {
     googleSignIn.signOut();
   }
 
@@ -120,9 +116,9 @@ class _HomeState extends State<Home> {
         children: <Widget>[
           //Timeline(),
           RaisedButton(
-      child: Text('LogOut'),
-      onPressed: logout,
-    ),
+            child: Text('LogOut'),
+            onPressed: logout,
+          ),
           ActivityFeed(),
           Upload(currentUser: currentUser),
           Search(),
@@ -139,7 +135,11 @@ class _HomeState extends State<Home> {
         items: [
           BottomNavigationBarItem(icon: Icon(Icons.whatshot)),
           BottomNavigationBarItem(icon: Icon(Icons.notifications_active)),
-          BottomNavigationBarItem(icon: Icon(Icons.photo_camera, size: 35.0,)),
+          BottomNavigationBarItem(
+              icon: Icon(
+            Icons.photo_camera,
+            size: 35.0,
+          )),
           BottomNavigationBarItem(icon: Icon(Icons.search)),
           BottomNavigationBarItem(icon: Icon(Icons.account_circle)),
         ],
@@ -153,7 +153,7 @@ class _HomeState extends State<Home> {
 
   onTap(int pageIndex) {
     pageController.animateToPage(
-        pageIndex,
+      pageIndex,
       duration: Duration(milliseconds: 300),
       curve: Curves.easeInOut,
     );
@@ -177,7 +177,7 @@ class _HomeState extends State<Home> {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
             Text(
-              'FlutterShare',
+              'FlutterGram',
               style: TextStyle(
                 fontFamily: 'Signatra',
                 fontSize: 90.0,

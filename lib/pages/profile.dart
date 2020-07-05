@@ -3,13 +3,13 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:fluttershare/models/user.dart';
-import 'package:fluttershare/pages/edit_profile.dart';
-import 'package:fluttershare/pages/home.dart';
-import 'package:fluttershare/widgets/header.dart';
-import 'package:fluttershare/widgets/post.dart';
-import 'package:fluttershare/widgets/post_tile.dart';
-import 'package:fluttershare/widgets/progress.dart';
+import '../models/user.dart';
+import '../pages/edit_profile.dart';
+import '../pages/home.dart';
+import '../widgets/header.dart';
+import '../widgets/post.dart';
+import '../widgets/post_tile.dart';
+import '../widgets/progress.dart';
 
 class Profile extends StatefulWidget {
   final String profileId;
@@ -25,7 +25,7 @@ class _ProfileState extends State<Profile> {
   int postCount = 0;
   List<Post> posts = [];
   String postOrientation = 'grid';
-  bool  isFollowing = false;
+  bool isFollowing = false;
   int followersCount = 0;
   int followingCount = 0;
 
@@ -38,7 +38,7 @@ class _ProfileState extends State<Profile> {
     checkIfFollowing();
   }
 
-  checkIfFollowing() async{
+  checkIfFollowing() async {
     DocumentSnapshot doc = await followersRef
         .document(widget.profileId)
         .collection('userFollowers')
@@ -49,8 +49,8 @@ class _ProfileState extends State<Profile> {
     });
   }
 
-  getFollowers()async{
-    QuerySnapshot snapshot =  await followersRef
+  getFollowers() async {
+    QuerySnapshot snapshot = await followersRef
         .document(widget.profileId)
         .collection('userFollowers')
         .getDocuments();
@@ -59,7 +59,7 @@ class _ProfileState extends State<Profile> {
     });
   }
 
-  getFollowing() async{
+  getFollowing() async {
     QuerySnapshot snapshot = await followingRef
         .document(widget.profileId)
         .collection('userFollowing')
@@ -79,7 +79,7 @@ class _ProfileState extends State<Profile> {
         .orderBy('timestamp', descending: true)
         .getDocuments();
     setState(() {
-      isLoading =  false;
+      isLoading = false;
       postCount = snapshot.documents.length;
       posts = snapshot.documents.map((doc) => Post.fromDocument(doc)).toList();
     });
@@ -123,7 +123,7 @@ class _ProfileState extends State<Profile> {
           child: Text(
             text,
             style: TextStyle(
-              color: isFollowing? Colors.black : Colors.white,
+              color: isFollowing ? Colors.black : Colors.white,
               fontWeight: FontWeight.bold,
             ),
           ),
@@ -131,7 +131,7 @@ class _ProfileState extends State<Profile> {
           decoration: BoxDecoration(
             color: isFollowing ? Colors.white : Colors.blue,
             border: Border.all(
-              color: isFollowing ? Colors.grey :  Colors.blue,
+              color: isFollowing ? Colors.grey : Colors.blue,
             ),
             borderRadius: BorderRadius.circular(5.0),
           ),
@@ -157,14 +157,14 @@ class _ProfileState extends State<Profile> {
         text: 'Edit Profile',
         function: editProfile,
       );
-    }else if(isFollowing){
+    } else if (isFollowing) {
       return buildButton(text: 'Unfollow', function: handelUnfollowUser);
-    }else if(!isFollowing){
+    } else if (!isFollowing) {
       return buildButton(text: 'Follow', function: handelFollowUser);
     }
   }
 
-  handelUnfollowUser(){
+  handelUnfollowUser() {
     setState(() {
       isFollowing = false;
     });
@@ -173,18 +173,20 @@ class _ProfileState extends State<Profile> {
         .document(widget.profileId)
         .collection('userFollowers')
         .document(currentUserId)
-        .get().then((doc) {
-          if(doc.exists){
-            doc.reference.delete();
-          }
+        .get()
+        .then((doc) {
+      if (doc.exists) {
+        doc.reference.delete();
+      }
     });
     // removing following
     followingRef
         .document(currentUserId)
         .collection('userFollowing')
         .document(widget.profileId)
-        .get().then((doc) {
-      if(doc.exists){
+        .get()
+        .then((doc) {
+      if (doc.exists) {
         doc.reference.delete();
       }
     });
@@ -193,45 +195,42 @@ class _ProfileState extends State<Profile> {
         .document(widget.profileId)
         .collection('feedItems')
         .document(currentUserId)
-        .get().then((doc) {
-      if(doc.exists){
+        .get()
+        .then((doc) {
+      if (doc.exists) {
         doc.reference.delete();
       }
     });
   }
 
-  handelFollowUser(){
+  handelFollowUser() {
     setState(() {
       isFollowing = true;
     });
     // make authorized user follower of another user
     followersRef
-      .document(widget.profileId)
-      .collection('userFollowers')
-      .document(currentUserId)
-      .setData({
-
-    });
+        .document(widget.profileId)
+        .collection('userFollowers')
+        .document(currentUserId)
+        .setData({});
     // put other user on our following collection
     followingRef
-      .document(currentUserId)
-      .collection('userFollowing')
-      .document(widget.profileId)
-      .setData({
-
-    });
+        .document(currentUserId)
+        .collection('userFollowing')
+        .document(widget.profileId)
+        .setData({});
     // add activity feed item for the other user to notify new follower
     activityFeedRef
-      .document(widget.profileId)
-      .collection('feedItems')
-      .document(currentUserId)
-      .setData({
-      'type' : 'follow',
-      'ownerId' : widget.profileId,
-      'username' : currentUser.username,
-      'userId' :currentUserId,
+        .document(widget.profileId)
+        .collection('feedItems')
+        .document(currentUserId)
+        .setData({
+      'type': 'follow',
+      'ownerId': widget.profileId,
+      'username': currentUser.username,
+      'userId': currentUserId,
       'userProfileImg': currentUser.photoUrl,
-      'timestamp' : timestamp,
+      'timestamp': timestamp,
     });
   }
 
@@ -316,10 +315,9 @@ class _ProfileState extends State<Profile> {
   }
 
   buildProfilePost() {
-    if(isLoading) {
+    if (isLoading) {
       return circularProgress();
-    }
-    else if(posts.isEmpty){
+    } else if (posts.isEmpty) {
       return Container(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -342,11 +340,13 @@ class _ProfileState extends State<Profile> {
           ],
         ),
       );
-    }
-    else if(postOrientation == 'grid'){
+    } else if (postOrientation == 'grid') {
       List<GridTile> gridTile = [];
       posts.forEach((post) {
-        gridTile.add(GridTile(child: PostTile(post: post,)));
+        gridTile.add(GridTile(
+            child: PostTile(
+          post: post,
+        )));
       });
       return GridView.count(
         crossAxisCount: 3,
@@ -357,16 +357,14 @@ class _ProfileState extends State<Profile> {
         physics: NeverScrollableScrollPhysics(),
         children: gridTile,
       );
-    }
-    else if(postOrientation == 'list'){
+    } else if (postOrientation == 'list') {
       return Column(
         children: posts,
       );
     }
+  }
 
-}
-
-  setPostOrientation(String postOrientation){
+  setPostOrientation(String postOrientation) {
     setState(() {
       this.postOrientation = postOrientation;
     });
@@ -377,14 +375,18 @@ class _ProfileState extends State<Profile> {
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: [
         IconButton(
-          onPressed:()=> setPostOrientation('grid'),
+          onPressed: () => setPostOrientation('grid'),
           icon: Icon(Icons.grid_on),
-          color: postOrientation == 'grid' ? Theme.of(context).primaryColor : Colors.grey,
+          color: postOrientation == 'grid'
+              ? Theme.of(context).primaryColor
+              : Colors.grey,
         ),
         IconButton(
-          onPressed:()=> setPostOrientation('list'),
+          onPressed: () => setPostOrientation('list'),
           icon: Icon(Icons.list),
-          color: postOrientation == 'list' ? Theme.of(context).primaryColor : Colors.grey,
+          color: postOrientation == 'list'
+              ? Theme.of(context).primaryColor
+              : Colors.grey,
         )
       ],
     );

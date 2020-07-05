@@ -2,11 +2,11 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:fluttershare/models/user.dart';
-import 'package:fluttershare/pages/activity_feed.dart';
-import 'package:fluttershare/pages/home.dart';
+import '../models/user.dart';
+import '../pages/activity_feed.dart';
+import '../pages/home.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:fluttershare/widgets/progress.dart';
+import '../widgets/progress.dart';
 
 class Search extends StatefulWidget {
   @override
@@ -14,11 +14,10 @@ class Search extends StatefulWidget {
 }
 
 class _SearchState extends State<Search> {
-
-  TextEditingController searchController = TextEditingController() ;
+  TextEditingController searchController = TextEditingController();
   Future<QuerySnapshot> searchResultsFuture;
 
-  handelSearch(String query){
+  handelSearch(String query) {
     Future<QuerySnapshot> users = usersRef
         .where('displayName', isGreaterThanOrEqualTo: query)
         .getDocuments();
@@ -27,33 +26,32 @@ class _SearchState extends State<Search> {
     });
   }
 
-  clearSearch(){
+  clearSearch() {
     searchController.clear();
   }
 
-  AppBar buildSearchField(){
+  AppBar buildSearchField() {
     return AppBar(
       backgroundColor: Colors.white,
       title: TextFormField(
         controller: searchController,
         decoration: InputDecoration(
-          hintText: 'Search for a user.....',
-          filled: true,
-          prefixIcon: Icon(
+            hintText: 'Search for a user.....',
+            filled: true,
+            prefixIcon: Icon(
               Icons.account_box,
               size: 28.0,
-          ),
-          suffixIcon: IconButton(
-            icon: Icon(Icons.clear),
-            onPressed: clearSearch,
-          )
-        ),
+            ),
+            suffixIcon: IconButton(
+              icon: Icon(Icons.clear),
+              onPressed: clearSearch,
+            )),
         onFieldSubmitted: handelSearch,
       ),
     );
   }
 
-  Container buildNoContent(){
+  Container buildNoContent() {
     final Orientation orientation = MediaQuery.of(context).orientation;
     return Container(
       child: Center(
@@ -83,12 +81,12 @@ class _SearchState extends State<Search> {
   buildSearchResults() {
     return FutureBuilder(
       future: searchResultsFuture,
-      builder: (context, snapshots){
-        if(!snapshots.hasData){
+      builder: (context, snapshots) {
+        if (!snapshots.hasData) {
           return circularProgress();
         }
         List<UserResult> searchResults = [];
-        snapshots.data.documents.forEach((doc){
+        snapshots.data.documents.forEach((doc) {
           User user = User.fromDocument(doc);
           UserResult searchResult = UserResult(user);
           searchResults.add(searchResult);
@@ -104,14 +102,14 @@ class _SearchState extends State<Search> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: buildSearchField(),
-      body: searchResultsFuture == null ? buildNoContent() : buildSearchResults(),
+      body:
+          searchResultsFuture == null ? buildNoContent() : buildSearchResults(),
       backgroundColor: Theme.of(context).primaryColor.withOpacity(0.75),
     );
   }
 }
 
 class UserResult extends StatelessWidget {
-
   final User user;
 
   UserResult(this.user);
@@ -123,11 +121,13 @@ class UserResult extends StatelessWidget {
       child: Column(
         children: <Widget>[
           GestureDetector(
-            onTap:() => showProfile(context, profileId: user.id),
+            onTap: () => showProfile(context, profileId: user.id),
             child: ListTile(
               leading: CircleAvatar(
                 backgroundColor: Colors.grey,
-                backgroundImage: user.photoUrl != null ? CachedNetworkImageProvider(user.photoUrl) : AssetImage('assets/images/user.png'),
+                backgroundImage: user.photoUrl != null
+                    ? CachedNetworkImageProvider(user.photoUrl)
+                    : AssetImage('assets/images/user.png'),
               ),
               title: Text(
                 user.displayName,

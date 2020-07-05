@@ -1,9 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:fluttershare/widgets/header.dart';
-import 'package:fluttershare/widgets/progress.dart';
+import '../widgets/header.dart';
+import '../widgets/progress.dart';
 
-final usersRef =  Firestore.instance.collection('users');
+final usersRef = Firestore.instance.collection('users');
 
 class Timeline extends StatefulWidget {
   @override
@@ -11,20 +11,19 @@ class Timeline extends StatefulWidget {
 }
 
 class _TimelineState extends State<Timeline> {
-
   List<dynamic> users = [];
 
   @override
   void initState() {
 //    getUsersById();
-  //createUser();
-   //updateUser();
+    //createUser();
+    //updateUser();
     deleteUser();
     super.initState();
   }
 
-  createUser() async{
-     usersRef.document('asodnfasd0iasd').setData({
+  createUser() async {
+    usersRef.document('asodnfasd0iasd').setData({
       'username': 'Jeff',
       'postsCount': 0,
       'isAdmin': false,
@@ -32,20 +31,20 @@ class _TimelineState extends State<Timeline> {
   }
 
   updateUser() async {
-    final doc = await usersRef
-        .document('EqvoFze1J6rGLMEncErh').get();
-    if(doc.exists){
+    final doc = await usersRef.document('EqvoFze1J6rGLMEncErh').get();
+    if (doc.exists) {
       doc.reference.updateData({
         'username': 'John',
-      'postsCount': 0,
-      'isAdmin': false,
+        'postsCount': 0,
+        'isAdmin': false,
       });
     }
   }
 
-  deleteUser() async{
-    final DocumentSnapshot doc = await usersRef.document('EqvoFze1J6rGLMEncErh').get();
-    if(doc.exists){
+  deleteUser() async {
+    final DocumentSnapshot doc =
+        await usersRef.document('EqvoFze1J6rGLMEncErh').get();
+    if (doc.exists) {
       doc.reference.delete();
     }
   }
@@ -64,11 +63,13 @@ class _TimelineState extends State<Timeline> {
       appBar: header(context, isAppTitle: true),
       body: StreamBuilder<QuerySnapshot>(
         stream: usersRef.snapshots(),
-        builder: (context, snapshot){
-          if(!snapshot.hasData){
+        builder: (context, snapshot) {
+          if (!snapshot.hasData) {
             return circularProgress();
           }
-          final List<Text> children =  snapshot.data.documents.map((doc) => Text(doc['username'])).toList();
+          final List<Text> children = snapshot.data.documents
+              .map((doc) => Text(doc['username']))
+              .toList();
           return Container(
             child: ListView(
               children: children,

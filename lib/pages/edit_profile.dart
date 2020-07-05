@@ -1,9 +1,9 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import "package:flutter/material.dart";
-import 'package:fluttershare/models/user.dart';
-import 'package:fluttershare/pages/home.dart';
-import 'package:fluttershare/widgets/progress.dart';
+import '../models/user.dart';
+import '../pages/home.dart';
+import '../widgets/progress.dart';
 
 class EditProfile extends StatefulWidget {
   final String currentUserId;
