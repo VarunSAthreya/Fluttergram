@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
 
-AppBar header(context, {bool isAppTitle = false, String titleText, removeBackButton = false}) {
+AppBar header(context,
+    {bool isAppTitle = false, String titleText, removeBackButton = false}) {
   return AppBar(
     automaticallyImplyLeading: !removeBackButton,
     title: Text(
-      isAppTitle ? 'FlutterShare': titleText,
+      isAppTitle ? 'FlutterGram' : titleText,
       style: TextStyle(
         color: Colors.white,
-        fontFamily: isAppTitle ?  'Signatra' : '',
-        fontSize: isAppTitle ?  50.0: 22.0,
+        fontFamily: isAppTitle ? 'Signatra' : '',
+        fontSize: isAppTitle ? 50.0 : 22.0,
       ),
       overflow: TextOverflow.ellipsis,
     ),
