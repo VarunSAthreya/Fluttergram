@@ -57,9 +57,9 @@ class _HomeState extends State<Home> {
     super.dispose();
   }
 
-  handelSignIn(GoogleSignInAccount account) {
+  handelSignIn(GoogleSignInAccount account) async {
     if (account != null) {
-      createUserInFirestore();
+      await createUserInFirestore();
       setState(() {
         isAuth = true;
       });
@@ -148,10 +148,6 @@ class _HomeState extends State<Home> {
         ],
       ),
     );
-//    return RaisedButton(
-//      child: Text('LogOut'),
-//      onPressed: logout,
-//    );
   }
 
   onTap(int pageIndex) {
