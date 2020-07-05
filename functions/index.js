@@ -99,3 +99,39 @@ exports.onCreatePost = functions.firestore
                 .set(postCreated);
         });
     });
+
+exports.onUpdatePost = functions.firestore
+    .document("/posts/{userId}/userPosts/{postId}")
+    .onUpdate(async (change, context) => {
+        const postUpdated = change.after.data();
+        const userId = context.params.userId;
+        const postId = context.params.postId;
+
+        // 1) Get all the followers of the user who made the post
+        const userFollowersRef = admin
+            .firestore()
+            .collection("followers")
+            .doc(userId)
+            .collection("userFollowers");
+
+        const querySnapshot = await userFollowersRef.get();
+
+        // 2) Update each post in each follower's timeline
+
+        querySnapshot.forEach((doc) => {
+            const followerId = doc.id;
+
+            admin
+                .firestore()
+                .collection("timeline")
+                .doc(followerId)
+                .collection("timelinePost")
+                .doc(postId)
+                .get()
+                .then((doc) => {
+                    if (doc.exists) {
+                        doc.ref.update(postUpdated);
+                    }
+                });
+        });
+    });
