@@ -3,12 +3,12 @@ import 'package:animator/animator.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:fluttershare/models/user.dart';
-import 'package:fluttershare/pages/activity_feed.dart';
-import 'package:fluttershare/pages/comments.dart';
-import 'package:fluttershare/pages/home.dart';
-import 'package:fluttershare/widgets/custom_image.dart';
-import 'package:fluttershare/widgets/progress.dart';
+import '../models/user.dart';
+import '../pages/activity_feed.dart';
+import '../pages/comments.dart';
+import '../pages/home.dart';
+import '../widgets/custom_image.dart';
+import '../widgets/progress.dart';
 
 class Post extends StatefulWidget {
   final String postId;
@@ -192,7 +192,7 @@ class _PostState extends State<Post> {
   addLikeToActivityFeed() {
     // add a notification to the postOwner;s activity feed only if comment made by other user
     bool isNotPostOwner = currentUserId != ownerId;
-    if(isNotPostOwner){
+    if (isNotPostOwner) {
       activityFeedRef
           .document(ownerId)
           .collection('feedItems')
@@ -200,7 +200,7 @@ class _PostState extends State<Post> {
           .setData({
         'type': 'like',
         'username': currentUser.username,
-        'userId' : currentUser.id,
+        'userId': currentUser.id,
         'userProfileImage': currentUser.photoUrl,
         'mediaUrl': mediaUrl,
         'timestamp': timestamp,
@@ -208,16 +208,16 @@ class _PostState extends State<Post> {
     }
   }
 
-  removeLikeFromActivityFeed(){
+  removeLikeFromActivityFeed() {
     bool isNotPostOwner = currentUserId != ownerId;
-    if(isNotPostOwner){
+    if (isNotPostOwner) {
       activityFeedRef
           .document(ownerId)
           .collection('feedItems')
           .document(postId)
-          .get().then((doc) {
-        if(doc.exists)
-          doc.reference.delete();
+          .get()
+          .then((doc) {
+        if (doc.exists) doc.reference.delete();
       });
     }
   }
