@@ -1,4 +1,4 @@
-# fluttergram
+# Fluttergram
 
 A Social Media Platform built using [Flutter](https://flutter.dev/) and [Firebase](http://firebase.google.com/)
 
