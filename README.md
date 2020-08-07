@@ -1,5 +1,7 @@
 # Fluttergram
 
+[![CodeFactor](https://www.codefactor.io/repository/github/varunsathreya/fluttergram/badge)](https://www.codefactor.io/repository/github/varunsathreya/fluttergram)
+
 A Social Media Platform built using [Flutter](https://flutter.dev/) and [Firebase](http://firebase.google.com/)
 
 ## Getting Started
