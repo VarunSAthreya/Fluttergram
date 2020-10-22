@@ -1,37 +1,33 @@
 name: FlutterGram
 description: A new Flutter application.
 
-
 version: 1.0.0+1
 
 environment:
-  sdk: ">=2.1.0 <3.0.0"
+  sdk: ">=2.2.0 <3.0.0"
 
 dependencies:
   flutter:
     sdk: flutter
-
-  cupertino_icons: ^0.1.2
-  cloud_firestore: ^0.13.5
-  image_picker: ^0.6.5+3
-  firebase_storage: ^3.1.5
-  firebase_auth: ^0.16.0
-  google_sign_in: ^4.4.4
-  geolocator: ^5.3.1
-  uuid: ^2.0.4
-  image: ^2.1.4
   animator: ^1.0.0+5
-  path_provider: ^1.6.7
+  cached_network_image: null
+  cloud_firestore: ^0.13.5
+  cupertino_icons: ^0.1.2
+  firebase_auth: ^0.16.0
   firebase_messaging: ^6.0.13
+  firebase_storage: ^3.1.5
+  flutter_svg: ^0.19.1
+  geolocator: ^5.3.1
+  google_sign_in: ^4.4.4
+  image: ^2.1.4
+  image_picker: ^0.6.5+3
+  path_provider: ^1.6.7
   timeago: ^2.0.26
-  cached_network_image:
-  flutter_svg:
+  uuid: ^2.0.4
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-
-
 
 flutter:
   uses-material-design: true
