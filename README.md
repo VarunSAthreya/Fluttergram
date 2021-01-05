@@ -37,13 +37,13 @@ $ npm install
 $ cd ..
 ```
 
-Run the app using:
+- Run the app using:
 
 ```sh
 $ flutter run
 ```
 
-Upload firebase functions:
+- Upload firebase functions:
 
 ```sh
 $ firebase deploy --only functions
